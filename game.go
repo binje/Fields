@@ -146,7 +146,7 @@ func (g *Game) DoAction(action Action) {
 	}
 
 	// Employment actions cannot be deuplicated (imitator aside)
-	if _, ok := AllEmploymentArray[action]; ok {
+	if _, ok := AllEmployment[action]; ok {
 		g.usedActions[action] = struct{}{}
 		if OffSeason(g.month, action) {
 			g.otherSideUsed = true
