@@ -29,6 +29,7 @@ func NewGame() Game {
 		stable:        NewStable(),
 		calendar:      NewCalendar(),
 		otherSideUsed: false,
+		usedActions:   make(map[Action]struct{}),
 	}
 }
 
@@ -55,7 +56,6 @@ func getEmploymentActions(season Season, otherSideUsed bool) []Action {
 	case NovemberInventorying:
 		panic("No November Inventory Tasks")
 	case MayInventorying:
-		//TODO choose how to breed animals
 		panic("No May Inventory Tasks")
 	case JunePreperations:
 		if otherSideUsed {
@@ -93,6 +93,7 @@ func (g *Game) DoAction(action Action) {
 	if tool := action.Tool(); tool != NoTool {
 		choices.UseTool(g.player.GetToolCount(tool))
 	}
+	g.choices = choices
 	g.DoGoodsAction(action)
 
 	//TODO remember last employment? for things like master or imitator
@@ -107,16 +108,17 @@ func (g *Game) DoAction(action Action) {
 		}
 	}
 
-	//TODO slaughter animals NOT BUTCHER
 	var animalsToKill int
 	if g.calendar.Season() == NovemberInventorying {
 		var bottleneck int
 		food, grain, flax, wood := g.home.NovemberInventory()
 		animalsToKill, bottleneck = g.goods.NovemberInventorying(food, grain, flax, wood)
 		g.bottleneck += bottleneck
+		g.calendar.NextMonth()
 	} else if g.calendar.Season() == MayInventorying {
 		wool := g.home.MayInventory()
 		animalsToKill = g.goods.MayInventorying(wool)
+		g.calendar.NextMonth()
 	}
 	if animalsToKill > 0 {
 		numAnimals := g.home.NumAnimals()
