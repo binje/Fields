@@ -1,6 +1,8 @@
 package goods
 
 import (
+	"fmt"
+
 	. "github.com/binje/Fields/actions"
 )
 
@@ -68,6 +70,7 @@ func (g Goods) increase(good Good, i int) {
 		}
 	}
 	g.m[good] = newVal
+	fmt.Printf("You now have %d %s\n", g.m[good], good)
 }
 
 func (g *Goods) useN(good Good, n int) {
