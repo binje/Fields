@@ -4,43 +4,172 @@ package action
 
 import "strconv"
 
-const (
-	_Action_name_0 = "FishermanGrocerWoolWeaverColonistPeatCutterDikeBuilderClayWorkerFarmerForesterWoodcutterMasterCarpenterBuilderWardenLaborer"
-	_Action_name_1 = "PeatBoatmanTannerLinenWeaverButcherCattleTraderGrocer2BuildersMerchantPotterBakerWoodTraderMaster2WainwrightDikeWarderCarpenter2Laborer2"
-	_Action_name_2 = "Finish"
-	_Action_name_3 = "GetSheepGetCowGetHorseGetWoodGet4WoodGetTimberGetClayGetBrickGetFlaxFieldGetGrainFieldGetForest"
-	_Action_name_4 = "UseSheepUseCowUseHorseUseWoodUseTimberUseClayUseBrickUseFlaxFieldUseGrainFieldUseForest"
-	_Action_name_5 = "BuildVehicleBuildHorseCartBuildCarriageBuildDroshskyBuildHandcartBuildWagonBuildPeatBoatBuildPlow"
-)
+const _Action_name = "GainEmploymentFishermanGrocerWoolWeaverColonistPeatCutterDikeBuilderClayWorkerFarmerForesterWoodcutterMasterCarpenterBuilderWardenLaborerPeatBoatmanTannerLinenWeaverButcherCattleTraderGrocer2BuildersMerchantPotterBakerWoodTraderMaster2WainwrightDikeWardenCarpenter2Laborer2WeaveWoolTanHideWeaveLinenButcherCowButcherSheepButcherHorseMakePotBakeFinishFlipNextGetFishTrapsGetFleshingBeamsGetWeavingLoomsGetSlaughteringTablesGetSpadesGetShovelPairesGetPotteryWheelsGetOvensGetAxesGetWorkBenchesGetSheepGetCowGetHorseGetWoodGet4WoodGetTimberGetClayGetBrickSlaughterSheepSlaughterCowSlaughterHorseGetPlowPlowFlaxFieldPlowGrainFieldPlantForestBuildStallBuildStableBuildVehicleBuildHorseCartBuildCarriageBuildDroshskyBuildHandcartBuildWagonBuildCartBuildPeatBoatBuildPlowTravelNordenTravelHageTravelBeemoorTravelDornumTravelEsensTravelAurichTravelEmdenTravelLeerTravelBremenSellGrainFieldSellFlaxFieldTradeSheepTradePeatBoatTradeWinterWearTradeLeatherTradeAnimalTradeHorseTradeHideTrade2GrainTradeWoolenTradePeatTradeSummerWearTradeLeatherWearTradeFlaxTradeLinenTradeCowTradeClothingTradeMoorTradeTimberTrade2AnimalTradeLinenSetTradeClothingSetUseLeatherWearUseSummerWearUseWinterWearUsePeatBoatPeatForWoolPeatForGrainPeatForFoodPeatForFlaxPeatForHideBuildFarmersHouseBuildPlowMakersWorkShopBuildNovicesHutBuildWorkShopBuildWeavingParlorBuildColonistsHouseBuildCarpentersWorkshopBuildSchnappsDistilleryBuildLoadingStationBuildLitterStorageBuildWoodTraderBuildTurneryBuildSmokehouseBuildSmithyBuildCooperageBuildBakehouseBuildMillBuildWeavingMillBuildTextileHouseBuildSaddleryBuildJoineryBuildWaterfrontHouseBuildPottersInnBuildFarmersInnBuildJunkDealersInnBuildGulfHouseInnBuildMilkHouseInnBuildSluiceYardInnBuildVillageChurchBuildLutetsburgCastleBuildBerumCastleUseWoodUseClayUseTimberUseBrickUse8FlaxUse8GrainUse10FlaxUse10Wool"
 
-var (
-	_Action_index_0 = [...]uint8{0, 9, 15, 25, 33, 43, 54, 64, 70, 78, 88, 94, 103, 110, 116, 123}
-	_Action_index_1 = [...]uint8{0, 11, 17, 28, 35, 47, 54, 70, 76, 81, 91, 98, 108, 118, 128, 136}
-	_Action_index_3 = [...]uint8{0, 8, 14, 22, 29, 37, 46, 53, 61, 73, 86, 95}
-	_Action_index_4 = [...]uint8{0, 8, 14, 22, 29, 38, 45, 53, 65, 78, 87}
-	_Action_index_5 = [...]uint8{0, 12, 26, 39, 52, 65, 75, 88, 97}
-)
+var _Action_map = map[Action]string{
+	2:   _Action_name[0:14],
+	4:   _Action_name[14:23],
+	5:   _Action_name[23:29],
+	6:   _Action_name[29:39],
+	7:   _Action_name[39:47],
+	8:   _Action_name[47:57],
+	9:   _Action_name[57:68],
+	10:  _Action_name[68:78],
+	11:  _Action_name[78:84],
+	12:  _Action_name[84:92],
+	13:  _Action_name[92:102],
+	14:  _Action_name[102:108],
+	15:  _Action_name[108:117],
+	16:  _Action_name[117:124],
+	17:  _Action_name[124:130],
+	18:  _Action_name[130:137],
+	20:  _Action_name[137:148],
+	21:  _Action_name[148:154],
+	22:  _Action_name[154:165],
+	23:  _Action_name[165:172],
+	24:  _Action_name[172:184],
+	25:  _Action_name[184:191],
+	26:  _Action_name[191:207],
+	27:  _Action_name[207:213],
+	28:  _Action_name[213:218],
+	29:  _Action_name[218:228],
+	30:  _Action_name[228:235],
+	31:  _Action_name[235:245],
+	32:  _Action_name[245:255],
+	33:  _Action_name[255:265],
+	34:  _Action_name[265:273],
+	36:  _Action_name[273:282],
+	37:  _Action_name[282:289],
+	38:  _Action_name[289:299],
+	39:  _Action_name[299:309],
+	40:  _Action_name[309:321],
+	41:  _Action_name[321:333],
+	42:  _Action_name[333:340],
+	43:  _Action_name[340:344],
+	45:  _Action_name[344:350],
+	46:  _Action_name[350:354],
+	47:  _Action_name[354:358],
+	49:  _Action_name[358:370],
+	50:  _Action_name[370:386],
+	51:  _Action_name[386:401],
+	52:  _Action_name[401:422],
+	53:  _Action_name[422:431],
+	54:  _Action_name[431:446],
+	55:  _Action_name[446:462],
+	56:  _Action_name[462:470],
+	57:  _Action_name[470:477],
+	58:  _Action_name[477:491],
+	60:  _Action_name[491:499],
+	61:  _Action_name[499:505],
+	62:  _Action_name[505:513],
+	63:  _Action_name[513:520],
+	64:  _Action_name[520:528],
+	65:  _Action_name[528:537],
+	66:  _Action_name[537:544],
+	67:  _Action_name[544:552],
+	69:  _Action_name[552:566],
+	70:  _Action_name[566:578],
+	71:  _Action_name[578:592],
+	73:  _Action_name[592:599],
+	74:  _Action_name[599:612],
+	75:  _Action_name[612:626],
+	76:  _Action_name[626:637],
+	77:  _Action_name[637:647],
+	78:  _Action_name[647:658],
+	80:  _Action_name[658:670],
+	81:  _Action_name[670:684],
+	82:  _Action_name[684:697],
+	83:  _Action_name[697:710],
+	84:  _Action_name[710:723],
+	85:  _Action_name[723:733],
+	86:  _Action_name[733:742],
+	87:  _Action_name[742:755],
+	88:  _Action_name[755:764],
+	91:  _Action_name[764:776],
+	92:  _Action_name[776:786],
+	93:  _Action_name[786:799],
+	94:  _Action_name[799:811],
+	95:  _Action_name[811:822],
+	96:  _Action_name[822:834],
+	97:  _Action_name[834:845],
+	98:  _Action_name[845:855],
+	99:  _Action_name[855:867],
+	101: _Action_name[867:881],
+	102: _Action_name[881:894],
+	103: _Action_name[894:904],
+	104: _Action_name[904:917],
+	105: _Action_name[917:932],
+	106: _Action_name[932:944],
+	107: _Action_name[944:955],
+	108: _Action_name[955:965],
+	109: _Action_name[965:974],
+	110: _Action_name[974:985],
+	111: _Action_name[985:996],
+	112: _Action_name[996:1005],
+	113: _Action_name[1005:1020],
+	114: _Action_name[1020:1036],
+	115: _Action_name[1036:1045],
+	116: _Action_name[1045:1055],
+	117: _Action_name[1055:1063],
+	118: _Action_name[1063:1076],
+	119: _Action_name[1076:1085],
+	120: _Action_name[1085:1096],
+	121: _Action_name[1096:1108],
+	122: _Action_name[1108:1121],
+	123: _Action_name[1121:1137],
+	124: _Action_name[1137:1151],
+	125: _Action_name[1151:1164],
+	126: _Action_name[1164:1177],
+	128: _Action_name[1177:1188],
+	129: _Action_name[1188:1199],
+	130: _Action_name[1199:1211],
+	131: _Action_name[1211:1222],
+	132: _Action_name[1222:1233],
+	133: _Action_name[1233:1244],
+	135: _Action_name[1244:1261],
+	136: _Action_name[1261:1284],
+	137: _Action_name[1284:1299],
+	138: _Action_name[1299:1312],
+	139: _Action_name[1312:1330],
+	140: _Action_name[1330:1349],
+	141: _Action_name[1349:1372],
+	142: _Action_name[1372:1395],
+	143: _Action_name[1395:1414],
+	144: _Action_name[1414:1432],
+	145: _Action_name[1432:1447],
+	146: _Action_name[1447:1459],
+	147: _Action_name[1459:1474],
+	148: _Action_name[1474:1485],
+	149: _Action_name[1485:1499],
+	150: _Action_name[1499:1513],
+	151: _Action_name[1513:1522],
+	152: _Action_name[1522:1538],
+	153: _Action_name[1538:1555],
+	154: _Action_name[1555:1568],
+	155: _Action_name[1568:1580],
+	156: _Action_name[1580:1600],
+	157: _Action_name[1600:1615],
+	158: _Action_name[1615:1630],
+	159: _Action_name[1630:1649],
+	160: _Action_name[1649:1666],
+	161: _Action_name[1666:1683],
+	162: _Action_name[1683:1701],
+	163: _Action_name[1701:1719],
+	164: _Action_name[1719:1740],
+	165: _Action_name[1740:1756],
+	167: _Action_name[1756:1763],
+	168: _Action_name[1763:1770],
+	169: _Action_name[1770:1779],
+	170: _Action_name[1779:1787],
+	171: _Action_name[1787:1795],
+	172: _Action_name[1795:1804],
+	173: _Action_name[1804:1813],
+	174: _Action_name[1813:1822],
+}
 
 func (i Action) String() string {
-	switch {
-	case 2 <= i && i <= 16:
-		i -= 2
-		return _Action_name_0[_Action_index_0[i]:_Action_index_0[i+1]]
-	case 18 <= i && i <= 32:
-		i -= 18
-		return _Action_name_1[_Action_index_1[i]:_Action_index_1[i+1]]
-	case i == 34:
-		return _Action_name_2
-	case 36 <= i && i <= 46:
-		i -= 36
-		return _Action_name_3[_Action_index_3[i]:_Action_index_3[i+1]]
-	case 48 <= i && i <= 57:
-		i -= 48
-		return _Action_name_4[_Action_index_4[i]:_Action_index_4[i+1]]
-	case 59 <= i && i <= 66:
-		i -= 59
-		return _Action_name_5[_Action_index_5[i]:_Action_index_5[i+1]]
-	default:
-		return "Action(" + strconv.FormatInt(int64(i), 10) + ")"
+	if str, ok := _Action_map[i]; ok {
+		return str
 	}
+	return "Action(" + strconv.FormatInt(int64(i), 10) + ")"
 }

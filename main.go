@@ -13,7 +13,6 @@ func main() {
 
 	for !g.IsEnd() {
 		fmt.Println()
-		g.PrintDate()
 		fmt.Println("Options:")
 		availableActions := g.AvailableActions()
 		for _, action := range availableActions {
@@ -23,7 +22,6 @@ func main() {
 		fmt.Scan(&input)
 		if canDo(input, availableActions) {
 			g.DoAction(input)
-			g.NextMonth()
 		} else {
 			fmt.Println("Cannot do that action")
 		}
@@ -38,3 +36,13 @@ func canDo(action Action, actions []Action) bool {
 	}
 	return false
 }
+
+// TODO check if you have room for vehicle, throw away a vehicle if not
+
+// TODO asset uniqueness on cureent choices?
+
+// TODO travel exchanges? linking
+
+//TODO all of buildings
+
+//TODO breeding

@@ -3,7 +3,9 @@ package building
 type Building int
 
 const (
-	FarmersHouse Building = iota
+	undefinedBuilding Building = iota
+	_
+	FarmersHouse
 	PlowMakersWorkShop
 	NovicesHut
 	WorkShop
@@ -40,8 +42,8 @@ const (
 	BerumCastle
 )
 
-/*:GoB
-func (b *Building) Cost() [][]Action {
+/*
+func (b *Building) Cost() []action.Choice {
 	switch b {
 	case FarmersHouse, PlowMakersWorkShop, NovicesHut, WorkShop, WeavingParlor, ColonistsHouse, CarpentersWorkshop, SchnappsDistillery, LoadingStation, LitterStorage, WoodTrader:
 		return [][]Action{

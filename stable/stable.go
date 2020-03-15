@@ -1,7 +1,9 @@
 package stable
 
+import . "github.com/binje/Fields/actions"
+
 type Stable struct {
-	vehicles          []Vehicle
+	vehicles          map[Vehicle]int
 	smallSpacesLeft   int
 	largeSpacesLeft   int
 	wildcardSpaceOpen bool
@@ -12,43 +14,51 @@ var numLargeSpaces = 2
 
 func NewStable() *Stable {
 	return &Stable{
-		vehicles:          make([]Vehicle, 0),
+		vehicles:          make(map[Vehicle]int),
 		smallSpacesLeft:   numSmallSpaces,
 		largeSpacesLeft:   numLargeSpaces,
 		wildcardSpaceOpen: true,
 	}
 }
 
-func (s *Stable) getVp() int {
-	vp := 0
-	for _, v := range s.vehicles {
-		vp += v.GetVp()
+func (s *Stable) DoAction(action Action) {
+	if vehicle, ok := buildVehicle[action]; ok {
+		s.addVehicle(vehicle)
+		return
 	}
-	if s.largeSpacesLeft == numLargeSpaces {
-		vp -= 3
+	switch action {
+	case TravelDornum:
+		s.removeSmallVehicle(Plow)
+	case TradePeatBoat:
+		s.removeSmallVehicle(PeatBoat)
 	}
-	return vp
 }
 
-func (s *Stable) CanAddVehicle(v Vehicle) bool {
+var buildVehicle = map[Action]Vehicle{
+	BuildHorseCart: HorseCart,
+	BuildCarriage:  Carriage,
+	BuildDroshsky:  Droshsky,
+	BuildHandcart:  Handcart,
+	BuildWagon:     Wagon,
+	BuildCart:      Cart,
+	BuildPeatBoat:  PeatBoat,
+	BuildPlow:      Plow,
+}
+
+func (s *Stable) canAddVehicle(v Vehicle) bool {
 	if s.wildcardSpaceOpen {
 		return true
 	}
-	if v.GetSize() == Small {
+	if v.IsSmall() {
 		return s.smallSpacesLeft > 0
 	} else {
 		return s.largeSpacesLeft > 0
 	}
 }
 
-func (s *Stable) AddVehicle(n VehicleName) {
-	//TODO throw away equipment?
-	v := *GetVehicle(n)
-	if !s.CanAddVehicle(v) {
-		return
-	}
-	s.vehicles = append(s.vehicles, v)
-	if v.GetSize() == Small {
+func (s *Stable) addVehicle(v Vehicle) {
+	s.vehicles[v]++
+	if v.IsSmall() {
 		if s.smallSpacesLeft > 0 {
 			s.smallSpacesLeft--
 		} else {
@@ -63,11 +73,38 @@ func (s *Stable) AddVehicle(n VehicleName) {
 	}
 }
 
-func (s *Stable) GetNumPlows() (sum int) {
-	for _, v := range s.vehicles {
-		if v.IsPlow() {
-			sum++
-		}
+func (s *Stable) removeSmallVehicle(v Vehicle) {
+	if s.vehicles[Cart]+s.vehicles[Wagon]+s.vehicles[PeatBoat]+s.vehicles[Plow] > numSmallSpaces {
+		s.wildcardSpaceOpen = true
+	} else {
+		s.smallSpacesLeft++
+	}
+	s.vehicles[v]--
+}
+
+func (s *Stable) removeLargeVehicle(v Vehicle) {
+	if s.vehicles[Handcart]+s.vehicles[Droshsky]+s.vehicles[Carriage]+s.vehicles[HorseCart] > numLargeSpaces {
+		s.wildcardSpaceOpen = true
+	} else {
+		s.smallSpacesLeft++
+	}
+	s.vehicles[v]--
+}
+
+func (s *Stable) NumPlows() int {
+	return s.vehicles[Plow]
+}
+
+func (s *Stable) NumPeatBoats() int {
+	return s.vehicles[PeatBoat]
+}
+
+func (s *Stable) getVp() (vp int) {
+	for v, qty := range s.vehicles {
+		vp += v.GetVp() * qty
+	}
+	if s.largeSpacesLeft == numLargeSpaces {
+		vp -= 3
 	}
 	return
 }
