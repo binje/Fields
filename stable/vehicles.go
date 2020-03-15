@@ -1,9 +1,12 @@
 package stable
 
-type VehicleName int
+import "fmt"
+
+type Vehicle int
 
 const (
-	Cart VehicleName = iota
+	undefinedVehicle Vehicle = iota
+	Cart
 	HorseCart
 	Carriage
 	Droshsky
@@ -11,81 +14,33 @@ const (
 	Wagon
 	PeatBoat
 	Plow
+	_ // invisible vehicles for haulsize
+	noSpace
+	twoSpace
+	twoSpaceOnly
 )
-
-type Size bool
-
-const (
-	Small = true
-	Large = false
-)
-
-type Vehicle struct {
-	name VehicleName
-	size Size
-	vp   int
-}
 
 func (v *Vehicle) Flip() *Vehicle {
-	switch v.name {
-	case Cart:
-		return GetHorseCart()
-	case HorseCart:
-		return GetCart()
-	case Carriage:
-		return GetDroshsky()
-	case Droshsky:
-		return GetCarriage()
-	case Handcart:
-		return GetWagon()
-	case Wagon:
-		return GetHandcart()
-	case PeatBoat:
-		return GetPlow()
-	case Plow:
-		return GetPeatBoat()
-	default:
-		panic("Got unknown vehicle")
+	if vehicle, ok := flipTable[*v]; ok {
+		v = &vehicle
+		return v
 	}
+	panic("Got unknown vehicle")
 }
 
-func GetVehicle(n VehicleName) *Vehicle {
-	switch n {
-	case Cart:
-		return GetCart()
-	case HorseCart:
-		return GetHorseCart()
-	case Carriage:
-		return GetCarriage()
-	case Droshsky:
-		return GetDroshsky()
-	case Handcart:
-		return GetHandcart()
-	case Wagon:
-		return GetWagon()
-	case PeatBoat:
-		return GetPeatBoat()
-	case Plow:
-		return GetPlow()
-	default:
-		panic("Got unknown vehicle")
-	}
-}
-
-func (v *Vehicle) GetSize() Size {
-	return v.size
-}
-
-func (v *Vehicle) IsPlow() Size {
-	return v.name == Plow
-}
-
-func (v *Vehicle) GetVp() int {
-	return v.vp
+var flipTable = map[Vehicle]Vehicle{
+	Cart:      HorseCart,
+	HorseCart: Cart,
+	Carriage:  Droshsky,
+	Droshsky:  Carriage,
+	Handcart:  Wagon,
+	Wagon:     Handcart,
+	PeatBoat:  Plow,
+	Plow:      PeatBoat,
 }
 
 func (v Vehicle) GetAvailableHauls() [][]int {
-	switch v.name {
+	switch v {
 	case Cart:
 		return [][]int{
 			[]int{1, 1, 1},
@@ -123,65 +78,57 @@ func (v Vehicle) GetAvailableHauls() [][]int {
 	return [][]int{}
 }
 
-func GetCart() *Vehicle {
-	return &Vehicle{
-		name: Cart,
-		size: Large,
-		vp:   1,
+//var TwoOnly =[][]int{2}
+//var TwoPace =[][]int{2},[]int{1,1}
+
+var haul4 = map[Vehicle]Vehicle{
+	Droshsky:  noSpace,
+	HorseCart: noSpace,
+}
+
+var haul3 = map[Vehicle]Vehicle{
+	Cart:      noSpace,
+	HorseCart: Handcart,
+	Carriage:  noSpace,
+	Droshsky:  Handcart,
+}
+
+var haul2 = map[Vehicle]Vehicle{
+	Cart:      Handcart,
+	HorseCart: twoSpace,
+	Carriage:  Handcart,
+	Droshsky:  Wagon,
+}
+
+var haul1 = map[Vehicle]Vehicle{
+	Cart:      twoSpace,
+	HorseCart: Cart,
+	Carriage:  twoSpaceOnly,
+	Droshsky:  Carriage,
+	Handcart:  noSpace,
+	Wagon:     Handcart,
+}
+
+func (v Vehicle) GetVp() int {
+	switch v {
+	case Handcart:
+		return 0
+	case Cart, Wagon, PeatBoat:
+		return 1
+	case HorseCart:
+		return 2
+	case Plow:
+		return 3
+	case Carriage:
+		return 4
+	case Droshsky:
+		return 5
+	default:
+		fmt.Println(v)
+		panic("Getting Vp for unknown vehicle")
 	}
 }
 
-func GetHorseCart() *Vehicle {
-	return &Vehicle{
-		name: HorseCart,
-		size: Large,
-		vp:   2,
-	}
-}
-
-func GetCarriage() *Vehicle {
-	return &Vehicle{
-		name: Carriage,
-		size: Large,
-		vp:   4,
-	}
-}
-
-func GetDroshsky() *Vehicle {
-	return &Vehicle{
-		name: Droshsky,
-		size: Large,
-		vp:   5,
-	}
-}
-
-func GetHandcart() *Vehicle {
-	return &Vehicle{
-		name: Handcart,
-		size: Small,
-		vp:   0,
-	}
-}
-func GetWagon() *Vehicle {
-	return &Vehicle{
-		name: Wagon,
-		size: Small,
-		vp:   1,
-	}
-}
-
-func GetPeatBoat() *Vehicle {
-	return &Vehicle{
-		name: PeatBoat,
-		size: Small,
-		vp:   1,
-	}
-}
-
-func GetPlow() *Vehicle {
-	return &Vehicle{
-		name: Plow,
-		size: Small,
-		vp:   3,
-	}
+func (v Vehicle) IsSmall() bool {
+	return v > Droshsky
 }

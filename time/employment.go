@@ -5,14 +5,14 @@ import . "github.com/binje/Fields/actions"
 //TODO handle crosscalls
 // Laborer2 -> builder
 // DikeWarden -> warden
-func OffSeason(m Month, a Action) bool {
+func OffSeason(season Season, a Action) bool {
 	if _, ok := SummerEmployment[a]; ok {
-		if m.Season() == DecemberPreperations {
+		if season == DecemberPreperations {
 			return true
 		}
 	}
 	if _, ok := WinterEmployment[a]; ok {
-		if m.Season() == JunePreperations {
+		if season == JunePreperations {
 			return true
 		}
 	}
@@ -68,7 +68,7 @@ var WinterEmployment = map[Action]struct{}{
 	WoodTrader:       struct{}{},
 	Master2:          struct{}{},
 	Wainwright:       struct{}{},
-	DikeWarder:       struct{}{},
+	DikeWarden:       struct{}{},
 	Carpenter2:       struct{}{},
 	Laborer2:         struct{}{},
 }
@@ -86,7 +86,7 @@ var WinterEmploymentArray = []Action{
 	WoodTrader,
 	Master2,
 	Wainwright,
-	DikeWarder,
+	DikeWarden,
 	Carpenter2,
 	Laborer2,
 }
@@ -121,7 +121,7 @@ var AllEmployment = map[Action]struct{}{
 	WoodTrader:       struct{}{},
 	Master2:          struct{}{},
 	Wainwright:       struct{}{},
-	DikeWarder:       struct{}{},
+	DikeWarden:       struct{}{},
 	Carpenter2:       struct{}{},
 	Laborer2:         struct{}{},
 }
