@@ -2,30 +2,41 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 
 	. "github.com/binje/Fields/actions"
 )
 
 func main() {
-	var input Action
+	//var input Action
 
 	g := NewGame()
 
+	/*
+		for !g.IsEnd() {
+			fmt.Println()
+			fmt.Println("Options:")
+			availableActions := g.AvailableActions()
+			for _, action := range availableActions {
+				fmt.Printf("%d: %s\n", action, action)
+			}
+			fmt.Println()
+			fmt.Scan(&input)
+			if canDo(input, availableActions) {
+				g.DoAction(input)
+			} else {
+				fmt.Println("Cannot do that action")
+			}
+		}
+	*/
+
 	for !g.IsEnd() {
-		fmt.Println()
-		fmt.Println("Options:")
 		availableActions := g.AvailableActions()
-		for _, action := range availableActions {
-			fmt.Printf("%d: %s\n", action, action)
-		}
-		fmt.Println()
-		fmt.Scan(&input)
-		if canDo(input, availableActions) {
-			g.DoAction(input)
-		} else {
-			fmt.Println("Cannot do that action")
-		}
+		randomAction := availableActions[rand.Intn(len(availableActions))]
+		fmt.Printf("%s\n", randomAction)
+		g.DoAction(randomAction)
 	}
+
 }
 
 func canDo(action Action, actions []Action) bool {
