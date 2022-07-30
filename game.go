@@ -38,7 +38,7 @@ func (g *Game) AvailableActions() (actions []Action) {
 		return g.choices[0]
 	}
 	for g.home.IsOverPopulated() {
-		return g.home.SlaughterOptions()
+		return g.home.GetSlaughterOptions()
 	}
 	actions = getEmploymentActions(g.calendar.Season(), g.otherSideUsed)
 	// remove used actions
@@ -81,9 +81,7 @@ func remove(s []Action, action Action) []Action {
 }
 
 func (g *Game) IsEnd() bool {
-	return g.calendar.Season() != JunePreperations
-	//TODO
-	//return g.calendar.EndOfTheWorld()
+	return g.calendar.EndOfTheWorld()
 }
 
 func (g *Game) DoAction(action Action) {
