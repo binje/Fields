@@ -25,7 +25,7 @@ const (
 	MayInventorying
 )
 
-// TODO is month exported
+// TODO is month exported?
 type month int
 
 const (

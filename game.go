@@ -81,7 +81,9 @@ func remove(s []Action, action Action) []Action {
 }
 
 func (g *Game) IsEnd() bool {
-	return g.calendar.EndOfTheWorld()
+	return g.calendar.Season() != JunePreperations
+	//TODO
+	//return g.calendar.EndOfTheWorld()
 }
 
 func (g *Game) DoAction(action Action) {
