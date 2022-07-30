@@ -42,7 +42,7 @@ const (
 )
 
 func (c Calendar) printDate() {
-	fmt.Println("\nYear:", c.halfYear, c.month, "\n")
+	fmt.Printf("\nYear:%d-%s\n", c.halfYear, c.month)
 }
 
 func (c Calendar) EndOfTheWorld() bool {
