@@ -37,8 +37,8 @@ func (g *Game) AvailableActions() (actions []Action) {
 	if len(g.choices) != 0 {
 		return g.choices[0]
 	}
-	if g.home.IsOverPopulated() {
-		// TODO return g.home.SlaughterOptions()
+	for g.home.IsOverPopulated() {
+		return g.home.SlaughterOptions()
 	}
 	actions = getEmploymentActions(g.calendar.Season(), g.otherSideUsed)
 	// remove used actions
