@@ -109,8 +109,12 @@ func (g *Game) DoAction(action Action) {
 		}
 	}
 
-	var animalsToKill int
+	var animalsToKill, bottleneck int
 	if g.calendar.Season() == NovemberInventorying {
+		food, grain, flax, wood := g.home.NovemberInventory()
+		animalsToKill, bottleneck = g.goods.NovemberInventorying(food, grain, flax, wood)
+		g.bottleneck += bottleneck
+		g.calendar.NextMonth()
 	} else if g.calendar.Season() == MayInventorying {
 		wool := g.home.MayInventory()
 		animalsToKill = g.goods.MayInventorying(wool)
@@ -125,14 +129,6 @@ func (g *Game) DoAction(action Action) {
 			//TODO add slaughter animal n times g.choices =
 		}
 	}
-}
-
-func (g *Game) novemberInventory() {
-	var bottleneck int
-	food, grain, flax, wood := g.home.NovemberInventory()
-	animalsToKill, bottleneck = g.goods.NovemberInventorying(food, grain, flax, wood)
-	g.bottleneck += bottleneck
-	g.calendar.NextMonth()
 }
 
 func (g *Game) DoGoodsAction(a Action) {
