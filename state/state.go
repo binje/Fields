@@ -18,6 +18,7 @@ func Root() *State {
 
 func (s *State) LoadActions(a []Action) {
 	if len(s.nextState) != 0 {
+		fmt.Println("ACTIONS EXIST")
 		return
 	}
 	for _, act := range a {
@@ -43,8 +44,8 @@ func newState(s *State) *State {
 
 func (s *State) IsFinished(a Action) bool {
 	fmt.Println("looking for: ", a)
-	for k, v := range s.nextState {
-		fmt.Println(k, v)
+	for k, _ := range s.nextState {
+		fmt.Println(k)
 	}
 	return s.nextState[a].finished
 }

@@ -43,6 +43,7 @@ func main() {
 
 			fmt.Printf("Taking action: %s\n", action)
 			g.DoAction(action)
+			state = state.TakeAction(action)
 
 		}
 		state.MarkFinished()
@@ -51,8 +52,12 @@ func main() {
 }
 
 func selectAction(s *State, aa []Action) Action {
-	fmt.Println("Selecting Action")
+	fmt.Println("Selecting Action ")
 	for _, a := range aa {
+		fmt.Println(a)
+	}
+	for _, a := range aa {
+		fmt.Println("is action finished? ", a)
 		if !s.IsFinished(a) {
 			// walk state machine
 			fmt.Println("TakingAction")
