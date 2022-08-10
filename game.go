@@ -86,6 +86,7 @@ func (g *Game) IsEnd() bool {
 }
 
 func (g *Game) DoAction(action Action) {
+	// if multple actions must be made in sequence, iterate to next choice
 	if len(g.choices) != 0 {
 		g.choices = g.choices[1:]
 	}

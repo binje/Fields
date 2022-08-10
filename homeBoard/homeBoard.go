@@ -1,8 +1,6 @@
 package home
 
 import (
-	"fmt"
-
 	. "github.com/binje/Fields/actions"
 )
 
@@ -18,7 +16,6 @@ type HomeBoard struct {
 	landscapes map[landscape]int
 }
 
-//TODO new homeboard
 func NewHomeBoard() *HomeBoard {
 	return &HomeBoard{
 		dikeMoves:  0,
@@ -79,7 +76,7 @@ func (h *HomeBoard) DoAction(action Action, i int) {
 
 func (h *HomeBoard) useAnimal(a animal) {
 	h.animals[a]++
-	fmt.Printf("You now have %d %s\n", h.animals[a], a)
+	//fmt.Printf("You now have %d %s\n", h.animals[a], a)
 }
 
 // Dikes
