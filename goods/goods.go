@@ -116,7 +116,7 @@ func (g *Goods) useWithSubstitutes(good Good, sub Good, sub2 Good) {
 	g.m[good] -= 1
 }
 
-func (g *Goods) NovemberInventorying(food, grain, flax, wood int) (animals int, bottleNeck int) {
+func (g *Goods) NovemberInventorying(food, grain, flax, wood int) (animals, bottleNeck int) {
 	g.increase(Food, food)
 	g.increase(Grain, grain)
 	g.increase(Flax, flax)
