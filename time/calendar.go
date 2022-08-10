@@ -12,7 +12,9 @@ func NewCalendar() *Calendar {
 	return &Calendar{
 		month:         july,
 		halfYear:      1,
-		endOfTheWorld: 9,
+		endOfTheWorld: 1,
+		//TODO reset to 9
+		//endOfTheWorld: 9,
 	}
 }
 
@@ -25,7 +27,6 @@ const (
 	MayInventorying
 )
 
-// TODO is month exported?
 type month int
 
 const (
@@ -46,13 +47,19 @@ func (c Calendar) printDate() {
 }
 
 func (c Calendar) EndOfTheWorld() bool {
-	return c.halfYear > c.endOfTheWorld
+	//TODO
+	//return c.halfYear > c.endOfTheWorld
+	return c.month == september
 }
 
 func (c *Calendar) NextMonth() {
 	c.month++
 	if c.month > may {
 		c.month = july
+		c.halfYear++
+	}
+	if c.month == january {
+		c.halfYear++
 	}
 	c.printDate()
 }

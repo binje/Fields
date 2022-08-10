@@ -88,7 +88,9 @@ func (g *Goods) use(good Good) {
 		return
 	}
 	if g.m[good] < 1 {
-		panic("YOU CAN'T DO THIS, YOU NEEDED that resource")
+		//TODO panic again
+		//panic("YOU CAN'T DO THIS, YOU NEEDED that resource")
+		//fmt.Println("YOU CAN'T DO THIS, YOU NEEDED that resource")
 	}
 	g.m[good] -= 1
 }
@@ -98,7 +100,9 @@ func (g *Goods) useWithSubstitute(good Good, sub Good) {
 		good = sub
 	}
 	if g.m[good] < 1 {
-		panic("YOU CAN'T DO THIS, YOU NEEDED that resource")
+		//TODO panic again
+		//panic("YOU CAN'T DO THIS, YOU NEEDED that resource")
+		//fmt.Println("YOU CAN'T DO THIS, YOU NEEDED that resource")
 	}
 	g.m[good] -= 1
 }

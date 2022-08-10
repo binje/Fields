@@ -18,7 +18,7 @@ func Root() *State {
 
 func (s *State) LoadActions(a []Action) {
 	if len(s.nextState) != 0 {
-		fmt.Println("ACTIONS EXIST")
+		fmt.Println("Actions already exist")
 		return
 	}
 	for _, act := range a {
@@ -43,10 +43,6 @@ func newState(s *State) *State {
 }
 
 func (s *State) IsFinished(a Action) bool {
-	fmt.Println("looking for: ", a)
-	for k, _ := range s.nextState {
-		fmt.Println(k)
-	}
 	return s.nextState[a].finished
 }
 
@@ -73,4 +69,17 @@ func (s *State) walkBack() {
 	// all next states are finished
 	s.finished = true
 	s.walkBack()
+}
+
+func (s *State) PrintCurrNext() {
+	fmt.Println()
+	fmt.Println("PRINTING STATE")
+	fmt.Println(s)
+	fmt.Println()
+
+	for k, v := range s.nextState {
+		fmt.Println(k, v)
+		fmt.Println()
+	}
+
 }

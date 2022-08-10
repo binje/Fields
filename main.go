@@ -29,7 +29,9 @@ func main() {
 	*/
 
 	root := Root()
+	i := 0
 	for !root.RootFinished() {
+		i++
 		g := NewGame()
 		state := root
 		for !g.IsEnd() {
@@ -47,24 +49,31 @@ func main() {
 
 		}
 		state.MarkFinished()
+		fmt.Println()
+		fmt.Println()
+		fmt.Println()
+		fmt.Println()
+		fmt.Println()
+		fmt.Println()
+		fmt.Println("finished ", i)
+		fmt.Println()
+		fmt.Println()
+		fmt.Println()
+		fmt.Println()
+		fmt.Println()
+		fmt.Println()
 	}
 
 }
 
 func selectAction(s *State, aa []Action) Action {
-	fmt.Println("Selecting Action ")
 	for _, a := range aa {
-		fmt.Println(a)
-	}
-	for _, a := range aa {
-		fmt.Println("is action finished? ", a)
 		if !s.IsFinished(a) {
 			// walk state machine
-			fmt.Println("TakingAction")
-			s.TakeAction(a)
 			return a
 		}
 	}
+	s.PrintCurrNext()
 	panic("no action")
 }
 
