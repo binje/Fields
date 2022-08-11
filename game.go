@@ -38,17 +38,19 @@ func (g *Game) AvailableActions() (actions []Action) {
 		return g.choices[0]
 	}
 	for g.home.IsOverPopulated() {
-		return g.home.SlaughterOptions()
+		return g.home.GetSlaughterOptions()
 	}
 	actions = getEmploymentActions(g.calendar.Season(), g.otherSideUsed)
+
 	// remove used actions
-	for a, _ := range g.usedActions {
-		actions = remove(actions, a)
-	}
+	//TODO
+	//for a, _ := range g.usedActions {
+	//actions = remove(actions, a)
+	//}
 	if g.stable.NumPeatBoats() > 0 {
 		actions = append(actions, UsePeatBoat)
 	}
-	return
+	return removeDuplicates(actions)
 }
 
 func getEmploymentActions(season Season, otherSideUsed bool) []Action {
@@ -80,13 +82,41 @@ func remove(s []Action, action Action) []Action {
 	return s
 }
 
+func removeDuplicates(a []Action) []Action {
+	//TODO make fast
+	m := make(map[Action]bool)
+	for _, a2 := range a {
+		m[a2] = true
+	}
+	a3 := make([]Action, len(m))
+	i := 0
+	for k, _ := range m {
+		a3[i] = k
+		i++
+	}
+	return a3
+	/*
+		for i := 0; i < len(a); i++ {
+			// if found
+			if _, ok := m[a[i]]; ok {
+				fmt.Println("DUPLICATE: ", a[i])
+				a[i] = a[len(a)-1]
+				a = a[:len(a)-1]
+				i--
+			}
+			m[a[i]] = true
+
+		}
+		return a
+	*/
+}
+
 func (g *Game) IsEnd() bool {
-	return g.calendar.Season() != JunePreperations
-	//TODO
-	//return g.calendar.EndOfTheWorld()
+	return g.calendar.EndOfTheWorld()
 }
 
 func (g *Game) DoAction(action Action) {
+	// if multple actions must be made in sequence, iterate to next choice
 	if len(g.choices) != 0 {
 		g.choices = g.choices[1:]
 	}
@@ -110,9 +140,8 @@ func (g *Game) DoAction(action Action) {
 		}
 	}
 
-	var animalsToKill int
+	var animalsToKill, bottleneck int
 	if g.calendar.Season() == NovemberInventorying {
-		var bottleneck int
 		food, grain, flax, wood := g.home.NovemberInventory()
 		animalsToKill, bottleneck = g.goods.NovemberInventorying(food, grain, flax, wood)
 		g.bottleneck += bottleneck

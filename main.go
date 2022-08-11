@@ -2,15 +2,14 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 
 	. "github.com/binje/Fields/actions"
+	. "github.com/binje/Fields/state"
+	"github.com/pkg/profile"
 )
 
 func main() {
 	//var input Action
-
-	g := NewGame()
 
 	/*
 		for !g.IsEnd() {
@@ -30,13 +29,40 @@ func main() {
 		}
 	*/
 
-	for !g.IsEnd() {
-		availableActions := g.AvailableActions()
-		randomAction := availableActions[rand.Intn(len(availableActions))]
-		fmt.Printf("%s\n", randomAction)
-		g.DoAction(randomAction)
-	}
+	defer profile.Start().Stop()
+	root := Root()
+	i := 0
+	for !root.RootFinished() {
+		i++
+		g := NewGame()
+		state := root
+		for !g.IsEnd() {
+			availableActions := g.AvailableActions()
+			// needed to know hwen all actions have been taken
+			state.LoadActions(availableActions)
 
+			//randomAction := availableActions[rand.Intn(len(availableActions))]
+			// take next action
+			action := selectAction(state, availableActions)
+
+			g.DoAction(action)
+			state = state.TakeAction(action)
+
+		}
+		state.MarkFinished()
+	}
+	fmt.Println("finished ", i)
+}
+
+func selectAction(s *State, aa []Action) Action {
+	for _, a := range aa {
+		if !s.IsFinished(a) {
+			// walk state machine
+			return a
+		}
+	}
+	s.PrintCurrNext()
+	panic("no action")
 }
 
 func canDo(action Action, actions []Action) bool {

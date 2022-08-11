@@ -1,8 +1,6 @@
 package goods
 
 import (
-	"fmt"
-
 	. "github.com/binje/Fields/actions"
 )
 
@@ -70,7 +68,7 @@ func (g Goods) increase(good Good, i int) {
 		}
 	}
 	g.m[good] = newVal
-	fmt.Printf("You now have %d %s\n", g.m[good], good)
+	//fmt.Printf("You now have %d %s\n", g.m[good], good)
 }
 
 func (g *Goods) useN(good Good, n int) {
@@ -88,7 +86,9 @@ func (g *Goods) use(good Good) {
 		return
 	}
 	if g.m[good] < 1 {
-		panic("YOU CAN'T DO THIS, YOU NEEDED that resource")
+		//TODO panic again
+		//panic("YOU CAN'T DO THIS, YOU NEEDED that resource")
+		//fmt.Println("YOU CAN'T DO THIS, YOU NEEDED that resource")
 	}
 	g.m[good] -= 1
 }
@@ -98,7 +98,9 @@ func (g *Goods) useWithSubstitute(good Good, sub Good) {
 		good = sub
 	}
 	if g.m[good] < 1 {
-		panic("YOU CAN'T DO THIS, YOU NEEDED that resource")
+		//TODO panic again
+		//panic("YOU CAN'T DO THIS, YOU NEEDED that resource")
+		//fmt.Println("YOU CAN'T DO THIS, YOU NEEDED that resource")
 	}
 	g.m[good] -= 1
 }
@@ -116,7 +118,7 @@ func (g *Goods) useWithSubstitutes(good Good, sub Good, sub2 Good) {
 	g.m[good] -= 1
 }
 
-func (g *Goods) NovemberInventorying(food, grain, flax, wood int) (animals int, bottleNeck int) {
+func (g *Goods) NovemberInventorying(food, grain, flax, wood int) (animals, bottleNeck int) {
 	g.increase(Food, food)
 	g.increase(Grain, grain)
 	g.increase(Flax, flax)
