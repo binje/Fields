@@ -33,6 +33,23 @@ func NewGame() Game {
 	}
 }
 
+func (g *Game) VP() int {
+	//TODO half points
+	vp := 0
+	vp += g.goods.Vp()
+	vp += g.stable.Vp()
+	// TODO get travel VP
+	vp += g.player.ToolsVp()
+	vp += g.goods.GoodsTrackVp()
+	if g.home.HasDepot() {
+		vp += g.goods.GoodsTrackVp()
+	}
+	vp += g.home.Vp()
+	vp += g.home.AnimalVp()
+	vp -= g.bottleneck
+	return vp
+}
+
 func (g *Game) AvailableActions() (actions []Action) {
 	if len(g.choices) != 0 {
 		return g.choices[0]

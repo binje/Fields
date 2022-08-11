@@ -1,6 +1,8 @@
 package home
 
 import (
+	"sort"
+
 	. "github.com/binje/Fields/actions"
 )
 
@@ -75,7 +77,7 @@ func (h *HomeBoard) DoAction(action Action, i int) {
 }
 
 func (h *HomeBoard) useAnimal(a animal) {
-	h.animals[a]++
+	h.animals[a]--
 	//fmt.Printf("You now have %d %s\n", h.animals[a], a)
 }
 
@@ -173,6 +175,12 @@ func (h *HomeBoard) GetBreedingNumbers() (independent, repetitive int) {
 		}
 	}
 	return
+}
+
+func (h *HomeBoard) AnimalVp() int {
+	animals := []int{h.animals[cow], h.animals[sheep], h.animals[horse]}
+	sort.Ints(animals)
+	return 2*animals[0] + animals[1]
 }
 
 // Space
@@ -330,4 +338,8 @@ func dikeVp(dikeMoves int) int {
 	default:
 		return 0
 	}
+}
+
+func (h *HomeBoard) HasDepot() bool {
+	return h.landscapes[depot] != 0
 }
