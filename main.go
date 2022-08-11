@@ -5,6 +5,7 @@ import (
 
 	. "github.com/binje/Fields/actions"
 	. "github.com/binje/Fields/state"
+	"github.com/pkg/profile"
 )
 
 func main() {
@@ -28,6 +29,7 @@ func main() {
 		}
 	*/
 
+	defer profile.Start().Stop()
 	root := Root()
 	i := 0
 	for !root.RootFinished() {
@@ -43,27 +45,13 @@ func main() {
 			// take next action
 			action := selectAction(state, availableActions)
 
-			fmt.Printf("Taking action: %s\n", action)
 			g.DoAction(action)
 			state = state.TakeAction(action)
 
 		}
 		state.MarkFinished()
-		fmt.Println()
-		fmt.Println()
-		fmt.Println()
-		fmt.Println()
-		fmt.Println()
-		fmt.Println()
-		fmt.Println("finished ", i)
-		fmt.Println()
-		fmt.Println()
-		fmt.Println()
-		fmt.Println()
-		fmt.Println()
-		fmt.Println()
 	}
-
+	fmt.Println("finished ", i)
 }
 
 func selectAction(s *State, aa []Action) Action {

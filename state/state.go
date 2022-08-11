@@ -18,7 +18,6 @@ func Root() *State {
 
 func (s *State) LoadActions(a []Action) {
 	if len(s.nextState) != 0 {
-		fmt.Println("Actions already exist")
 		return
 	}
 	for _, act := range a {

@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	. "github.com/binje/Fields/actions"
 	. "github.com/binje/Fields/goods"
 	. "github.com/binje/Fields/homeBoard"
@@ -87,18 +85,30 @@ func remove(s []Action, action Action) []Action {
 func removeDuplicates(a []Action) []Action {
 	//TODO make fast
 	m := make(map[Action]bool)
-	for i := 0; i < len(a); i++ {
-		// if found
-		if _, ok := m[a[i]]; ok {
-			fmt.Println("DUPLICATE: ", a[i])
-			a[i] = a[len(a)-1]
-			a = a[:len(a)-1]
-			i--
-		}
-		m[a[i]] = true
-
+	for _, a2 := range a {
+		m[a2] = true
 	}
-	return a
+	a3 := make([]Action, len(m))
+	i := 0
+	for k, _ := range m {
+		a3[i] = k
+		i++
+	}
+	return a3
+	/*
+		for i := 0; i < len(a); i++ {
+			// if found
+			if _, ok := m[a[i]]; ok {
+				fmt.Println("DUPLICATE: ", a[i])
+				a[i] = a[len(a)-1]
+				a = a[:len(a)-1]
+				i--
+			}
+			m[a[i]] = true
+
+		}
+		return a
+	*/
 }
 
 func (g *Game) IsEnd() bool {

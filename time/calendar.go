@@ -47,9 +47,7 @@ func (c Calendar) printDate() {
 }
 
 func (c Calendar) EndOfTheWorld() bool {
-	//TODO
-	//return c.halfYear > c.endOfTheWorld
-	return c.month == september
+	return c.halfYear > c.endOfTheWorld
 }
 
 func (c *Calendar) NextMonth() {
@@ -61,7 +59,7 @@ func (c *Calendar) NextMonth() {
 	if c.month == january {
 		c.halfYear++
 	}
-	c.printDate()
+	//c.printDate()
 }
 
 func (c Calendar) Season() Season {
