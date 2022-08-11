@@ -40,14 +40,22 @@ type Goods struct {
 
 func NewGoods() *Goods {
 	return &Goods{map[Good]int{
-		Wood:  4,
-		Clay:  4,
-		Peat:  3,
-		Food:  5,
-		Wool:  4,
-		Flax:  3,
-		Hide:  2,
-		Grain: 1,
+		Brick:       0,
+		Clay:        4,
+		Flax:        3,
+		Food:        5,
+		Grain:       1,
+		Hide:        2,
+		Leather:     0,
+		LeatherWear: 0,
+		Linen:       0,
+		Peat:        3,
+		SummerWear:  0,
+		Timber:      0,
+		WinterWear:  0,
+		Wood:        4,
+		Wool:        4,
+		Woolen:      0,
 	}}
 }
 
@@ -55,16 +63,18 @@ func (g *Goods) add(good Good) {
 	g.increase(good, 1)
 }
 
-//TODO put cap on goods
 func (g Goods) increase(good Good, i int) {
 	newVal := g.m[good] + i
-	if good == Food {
+	switch good {
+	case Food:
 		if newVal > 2*maxGood {
-			newVal = 2 * maxGood
+			g.m[good] = 2 * maxGood
+			return
 		}
-	} else if _, ok := goodsTrack[good]; ok {
+	case Grain, Hide, Flax, Wool:
 		if newVal > maxGood {
-			newVal = maxGood
+			g.m[good] = maxGood
+			return
 		}
 	}
 	g.m[good] = newVal
@@ -349,4 +359,38 @@ func (g *Goods) loseGoods(a Action, i int) {
 		g.useN(Brick, 3)
 		g.useN(Food, 15)
 	}
+}
+
+func (g *Goods) Vp() int {
+	vp := g.m[Timber] / 2
+	vp += g.m[Brick] + g.m[Linen] + g.m[Woolen] + g.m[Leather]
+	vp += 2 * (g.m[SummerWear] + g.m[WinterWear] + g.m[LeatherWear])
+	return vp
+}
+
+func (g *Goods) GoodsTrackVp() int {
+	v := 0
+	if g.m[Food] > maxGood {
+		v += 3
+		g.m[Food] -= maxGood
+	}
+	v += vp(g.m[Food])
+	v += vp(g.m[Grain])
+	v += vp(g.m[Hide])
+	v += vp(g.m[Flax])
+	v += vp(g.m[Wool])
+	return v
+}
+
+func vp(g int) int {
+	if g < 7 {
+		return 0
+	}
+	if g <= 10 {
+		return 1
+	}
+	if g <= 14 {
+		return 2
+	}
+	return 3
 }

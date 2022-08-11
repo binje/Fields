@@ -49,9 +49,10 @@ func main() {
 			state = state.TakeAction(action)
 
 		}
-		state.MarkFinished()
+		state.MarkFinished(g.VP())
 	}
 	fmt.Println("finished ", i)
+	fmt.Println("Max VP: ", root.GetVp())
 }
 
 func selectAction(s *State, aa []Action) Action {

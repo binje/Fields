@@ -99,7 +99,7 @@ func (s *Stable) NumPeatBoats() int {
 	return s.vehicles[PeatBoat]
 }
 
-func (s *Stable) getVp() (vp int) {
+func (s *Stable) Vp() (vp int) {
 	for v, qty := range s.vehicles {
 		vp += v.GetVp() * qty
 	}

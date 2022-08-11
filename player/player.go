@@ -52,3 +52,25 @@ func (p *Player) IncreaseTool(t Tool) {
 func (p *Player) GetToolCount(t Tool) int {
 	return toolRamp[t][p.tools[t]]
 }
+
+func (p *Player) ToolsVp() int {
+	vp := 0
+	for k, v := range p.tools {
+		vp += toolVp[k][v]
+	}
+	return vp
+
+}
+
+var toolVp = map[Tool][]int{
+	FishTrap:          []int{0, 0, 0, 0, 3},
+	FleshingBeam:      []int{0, 1, 3},
+	WeavingLoom:       []int{0, 1, 3, 4},
+	SlaughteringTable: []int{0, 1, 2},
+	Spade:             []int{0, 0, 2},
+	ShovelPair:        []int{0, 0, 0, 0},
+	Shovel:            []int{0, 0, 0, 0},
+	PotteryWheel:      []int{0, 0, 2},
+	Oven:              []int{0, 1, 5, 7},
+	Axe:               []int{0, 0, 0, 0},
+	Workbench:         []int{0, 1, 4}}

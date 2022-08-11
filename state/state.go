@@ -10,6 +10,7 @@ type State struct {
 	finished  bool
 	nextState map[Action]*State
 	prev      *State
+	vp        int
 }
 
 func Root() *State {
@@ -38,6 +39,7 @@ func newState(s *State) *State {
 		false,
 		make(map[Action]*State),
 		s,
+		-10000,
 	}
 }
 
@@ -49,8 +51,9 @@ func (s *State) RootFinished() bool {
 	return s.finished
 }
 
-func (s *State) MarkFinished() {
+func (s *State) MarkFinished(vp int) {
 	s.finished = true
+	s.vp = vp
 	s.walkBack()
 }
 
@@ -67,6 +70,11 @@ func (s *State) walkBack() {
 	}
 	// all next states are finished
 	s.finished = true
+	for _, ns := range s.nextState {
+		if ns.vp > s.vp {
+			s.vp = ns.vp
+		}
+	}
 	s.walkBack()
 }
 
@@ -81,4 +89,8 @@ func (s *State) PrintCurrNext() {
 		fmt.Println()
 	}
 
+}
+
+func (s *State) GetVp() int {
+	return s.vp
 }
