@@ -28,27 +28,37 @@ func (gs *GameSimulator) RunSimulation() (int, int) {
 	gameCount := 0
 	for !gs.root.RootFinished() {
 		gameCount++
-		game := NewGame()
-		state := gs.root
-		
-		for !game.IsEnd() {
-			availableActions := game.AvailableActions()
-			state.LoadActions(availableActions)
-			
-			action, err := gs.selectAction(state, availableActions)
-			if err != nil {
-				log.Printf("Error selecting action: %v", err)
-				break
-			}
-			
-			game.DoAction(action)
-			state = state.TakeAction(action)
-		}
-		
-		state.MarkFinished(game.VP())
+		gs.runSingleGame()
 	}
 	
 	return gameCount, gs.root.GetVp()
+}
+
+// runSingleGame executes one complete game
+func (gs *GameSimulator) runSingleGame() {
+	game := NewGame()
+	state := gs.root
+	
+	for !game.IsEnd() {
+		state = gs.executeGameTurn(game, state)
+	}
+	
+	state.MarkFinished(game.VP())
+}
+
+// executeGameTurn executes one turn of the game
+func (gs *GameSimulator) executeGameTurn(game *Game, state *State) *State {
+	availableActions := game.AvailableActions()
+	state.LoadActions(availableActions)
+	
+	action, err := gs.selectAction(state, availableActions)
+	if err != nil {
+		log.Printf("Error selecting action: %v", err)
+		return state
+	}
+	
+	game.DoAction(action)
+	return state.TakeAction(action)
 }
 
 // selectAction chooses the next action to perform

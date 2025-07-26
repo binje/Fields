@@ -2,6 +2,7 @@ package state
 
 import (
 	"fmt"
+	"slices"
 
 	. "github.com/binje/Fields/actions"
 )
@@ -14,23 +15,32 @@ type State struct {
 	vp        int
 }
 
+// NewState creates a new state node, optionally linking to a previous state.
+func newState(prev *State) *State {
+	return &State{
+		finished:  false,
+		nextState: nil,
+		prev:      prev,
+		vp:        -10000,
+	}
+}
+
 func Root() *State {
 	return newState(nil)
 }
 
-func (s *State) LoadActions(a []Action) {
+func (s *State) LoadActions(actions []Action) {
 	if len(s.nextState) != 0 {
 		return
 	}
-	maxAction := 0
-	for _, act := range a {
-		if int(act) > maxAction {
-			maxAction = int(act)
-		}
-	}
-	s.nextState = make([]*State, maxAction+1)
-	for _, act := range a {
-		s.nextState[int(act)] = newState(s)
+	
+	maxAction := slices.MaxFunc(actions, func(x, y Action) int {
+		return int(x) - int(y)
+	})
+	// Allocate nextState with enough space for all possible actions
+	s.nextState = make([]*State, int(maxAction)+1)
+	for _, action := range actions {
+		s.nextState[int(action)] = newState(s)
 	}
 }
 
@@ -39,15 +49,6 @@ func (s *State) TakeAction(a Action) *State {
 		panic(a)
 	}
 	return s.nextState[int(a)]
-}
-
-func newState(s *State) *State {
-	return &State{
-		false,
-		nil,
-		s,
-		-10000,
-	}
 }
 
 func (s *State) IsFinished(a Action) bool {
