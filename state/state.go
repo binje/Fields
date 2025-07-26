@@ -6,9 +6,10 @@ import (
 	. "github.com/binje/Fields/actions"
 )
 
+// For benchmarking: nextState is now a slice, indexed by Action (assumes Action is a dense int)
 type State struct {
 	finished  bool
-	nextState map[Action]*State
+	nextState []*State
 	prev      *State
 	vp        int
 }
@@ -21,30 +22,39 @@ func (s *State) LoadActions(a []Action) {
 	if len(s.nextState) != 0 {
 		return
 	}
+	maxAction := 0
 	for _, act := range a {
-		s.nextState[act] = newState(s)
+		if int(act) > maxAction {
+			maxAction = int(act)
+		}
+	}
+	s.nextState = make([]*State, maxAction+1)
+	for _, act := range a {
+		s.nextState[int(act)] = newState(s)
 	}
 }
 
 func (s *State) TakeAction(a Action) *State {
-	ns, ok := s.nextState[a]
-	if !ok {
+	if int(a) >= len(s.nextState) || s.nextState[int(a)] == nil {
 		panic(a)
 	}
-	return ns
+	return s.nextState[int(a)]
 }
 
 func newState(s *State) *State {
 	return &State{
 		false,
-		make(map[Action]*State),
+		nil,
 		s,
 		-10000,
 	}
 }
 
 func (s *State) IsFinished(a Action) bool {
-	return s.nextState[a].finished
+	if int(a) >= len(s.nextState) || s.nextState[int(a)] == nil {
+		return false
+	}
+	return s.nextState[int(a)].finished
 }
 
 func (s *State) RootFinished() bool {
@@ -63,15 +73,13 @@ func (s *State) walkBack() {
 		return
 	}
 	for _, ns := range s.nextState {
-		// there is an unfinished option
-		if !ns.finished {
+		if ns != nil && !ns.finished {
 			return
 		}
 	}
-	// all next states are finished
 	s.finished = true
 	for _, ns := range s.nextState {
-		if ns.vp > s.vp {
+		if ns != nil && ns.vp > s.vp {
 			s.vp = ns.vp
 		}
 	}
@@ -85,10 +93,11 @@ func (s *State) PrintCurrNext() {
 	fmt.Println()
 
 	for k, v := range s.nextState {
-		fmt.Println(k, v)
-		fmt.Println()
+		if v != nil {
+			fmt.Println(k, v)
+			fmt.Println()
+		}
 	}
-
 }
 
 func (s *State) GetVp() int {

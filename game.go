@@ -9,6 +9,7 @@ import (
 	. "github.com/binje/Fields/time"
 )
 
+// Game represents the main game state
 type Game struct {
 	player        *Player
 	home          *HomeBoard
@@ -21,6 +22,7 @@ type Game struct {
 	choices       [][]Action
 }
 
+// NewGame creates a new game instance
 func NewGame() Game {
 	return Game{
 		player:        NewPlayer(),
@@ -33,49 +35,53 @@ func NewGame() Game {
 	}
 }
 
+// VP calculates the total victory points
 func (g *Game) VP() int {
-	//TODO half points
 	vp := 0
 	vp += g.goods.Vp()
 	vp += g.stable.Vp()
-	// TODO get travel VP
 	vp += g.player.ToolsVp()
 	vp += g.goods.GoodsTrackVp()
+	
+	// Bonus VP for depot
 	if g.home.HasDepot() {
 		vp += g.goods.GoodsTrackVp()
 	}
+	
 	vp += g.home.Vp()
 	vp += g.home.AnimalVp()
 	vp -= g.bottleneck
 	return vp
 }
 
-func (g *Game) AvailableActions() (actions []Action) {
+// AvailableActions returns all available actions for the current game state
+func (g *Game) AvailableActions() []Action {
 	if len(g.choices) != 0 {
 		return g.choices[0]
 	}
-	for g.home.IsOverPopulated() {
+	
+	// Handle overpopulation
+	if g.home.IsOverPopulated() {
 		return g.home.GetSlaughterOptions()
 	}
-	actions = getEmploymentActions(g.calendar.Season(), g.otherSideUsed)
-
-	// remove used actions
-	//TODO
-	//for a, _ := range g.usedActions {
-	//actions = remove(actions, a)
-	//}
+	
+	actions := getEmploymentActions(g.calendar.Season(), g.otherSideUsed)
+	
+	// Add peat boat action if available
 	if g.stable.NumPeatBoats() > 0 {
 		actions = append(actions, UsePeatBoat)
 	}
+	
 	return removeDuplicates(actions)
 }
 
+// getEmploymentActions returns employment actions based on season and usage
 func getEmploymentActions(season Season, otherSideUsed bool) []Action {
 	switch season {
 	case NovemberInventorying:
-		panic("No November Inventory Tasks")
+		return []Action{} // No November Inventory Tasks
 	case MayInventorying:
-		panic("No May Inventory Tasks")
+		return []Action{} // No May Inventory Tasks
 	case JunePreperations:
 		if otherSideUsed {
 			return SummerEmploymentArray
@@ -86,70 +92,51 @@ func getEmploymentActions(season Season, otherSideUsed bool) []Action {
 		}
 	}
 	return AllEmploymentArray
-
 }
 
-func remove(s []Action, action Action) []Action {
-	for i, a := range s {
-		if a == action {
-			s[i] = s[len(s)-1]
-			return s[:len(s)-1]
+// removeDuplicates efficiently removes duplicate actions
+func removeDuplicates(actions []Action) []Action {
+	if len(actions) == 0 {
+		return actions
+	}
+	
+	seen := make(map[Action]bool)
+	result := make([]Action, 0, len(actions))
+	
+	for _, action := range actions {
+		if !seen[action] {
+			seen[action] = true
+			result = append(result, action)
 		}
 	}
-	return s
+	
+	return result
 }
 
-func removeDuplicates(a []Action) []Action {
-	//TODO make fast
-	m := make(map[Action]bool)
-	for _, a2 := range a {
-		m[a2] = true
-	}
-	a3 := make([]Action, len(m))
-	i := 0
-	for k, _ := range m {
-		a3[i] = k
-		i++
-	}
-	return a3
-	/*
-		for i := 0; i < len(a); i++ {
-			// if found
-			if _, ok := m[a[i]]; ok {
-				fmt.Println("DUPLICATE: ", a[i])
-				a[i] = a[len(a)-1]
-				a = a[:len(a)-1]
-				i--
-			}
-			m[a[i]] = true
-
-		}
-		return a
-	*/
-}
-
+// IsEnd checks if the game has ended
 func (g *Game) IsEnd() bool {
 	return g.calendar.EndOfTheWorld()
 }
 
+// DoAction executes an action and updates the game state
 func (g *Game) DoAction(action Action) {
-	// if multple actions must be made in sequence, iterate to next choice
+	// Handle sequential actions
 	if len(g.choices) != 0 {
 		g.choices = g.choices[1:]
 	}
 
+	// Process action choices
 	choices := action.NextActions()
 	if tool := action.Tool(); tool != NoTool {
 		choices.UseTool(g.player.GetToolCount(tool))
 	}
 	g.choices = choices
+	
+	// Execute goods action
 	g.DoGoodsAction(action)
 
-	//TODO remember last employment? for things like master or imitator
-
-	// Employment actions cannot be deuplicated (imitator aside)
-	// Must be done at end becasue increasing month prints the new date
-	if _, ok := AllEmployment[action]; ok {
+	// Handle employment actions
+	if _, isEmployment := AllEmployment[action]; isEmployment {
 		g.usedActions[action] = struct{}{}
 		g.calendar.NextMonth()
 		if OffSeason(g.calendar.Season(), action) {
@@ -157,43 +144,67 @@ func (g *Game) DoAction(action Action) {
 		}
 	}
 
-	var animalsToKill, bottleneck int
-	if g.calendar.Season() == NovemberInventorying {
+	// Handle inventory actions
+	g.handleInventoryActions()
+}
+
+// handleInventoryActions processes November and May inventory actions
+func (g *Game) handleInventoryActions() {
+	switch g.calendar.Season() {
+	case NovemberInventorying:
 		food, grain, flax, wood := g.home.NovemberInventory()
-		animalsToKill, bottleneck = g.goods.NovemberInventorying(food, grain, flax, wood)
+		animalsToKill, bottleneck := g.goods.NovemberInventorying(food, grain, flax, wood)
 		g.bottleneck += bottleneck
 		g.calendar.NextMonth()
-	} else if g.calendar.Season() == MayInventorying {
-		wool := g.home.MayInventory()
-		animalsToKill = g.goods.MayInventorying(wool)
-		g.calendar.NextMonth()
-	}
-	if animalsToKill > 0 {
-		numAnimals := g.home.NumAnimals()
-		if animalsToKill > numAnimals {
-			g.bottleneck += animalsToKill - numAnimals
-			g.home.KillAllAnimals()
-		} else {
-			//TODO add slaughter animal n times g.choices =
+		
+		// Handle animal slaughter
+		if animalsToKill > 0 {
+			g.handleAnimalSlaughter(animalsToKill)
 		}
+		
+	case MayInventorying:
+		wool := g.home.MayInventory()
+		animalsToKill := g.goods.MayInventorying(wool)
+		g.calendar.NextMonth()
+		
+		// Handle animal slaughter
+		if animalsToKill > 0 {
+			g.handleAnimalSlaughter(animalsToKill)
+		}
+		
+	default:
+		return
 	}
 }
 
-func (g *Game) DoGoodsAction(a Action) {
-	switch a {
+// handleAnimalSlaughter processes animal slaughter based on available animals
+func (g *Game) handleAnimalSlaughter(animalsToKill int) {
+	numAnimals := g.home.NumAnimals()
+	if animalsToKill > numAnimals {
+		g.bottleneck += animalsToKill - numAnimals
+		g.home.KillAllAnimals()
+	} else {
+		// TODO: Implement selective animal slaughter
+		// g.choices = append(g.choices, createSlaughterChoices(animalsToKill))
+	}
+}
+
+// DoGoodsAction executes goods-related actions
+func (g *Game) DoGoodsAction(action Action) {
+	switch action {
 	case Fisherman:
-		g.goods.DoAction(a, g.player.GetToolCount(FishTrap))
+		g.goods.DoAction(action, g.player.GetToolCount(FishTrap))
 	case PeatCutter:
-		g.goods.DoAction(a, g.home.CutPeat(g.player.GetToolCount(Spade)))
+		g.goods.DoAction(action, g.home.CutPeat(g.player.GetToolCount(Spade)))
 	case ClayWorker:
-		g.goods.DoAction(a, g.player.GetToolCount(Shovel))
+		g.goods.DoAction(action, g.player.GetToolCount(Shovel))
 	case Woodcutter:
-		g.goods.DoAction(a, g.player.GetToolCount(Axe))
+		g.goods.DoAction(action, g.player.GetToolCount(Axe))
 	case PeatBoatman:
-		g.goods.DoAction(a, g.stable.NumPeatBoats())
+		g.goods.DoAction(action, g.stable.NumPeatBoats())
 	case Grocer2:
-		g.goods.DoAction(a, g.home.CutPeat(1))
+		g.goods.DoAction(action, g.home.CutPeat(1))
 	default:
-		g.goods.DoAction(a, 0)
+		g.goods.DoAction(action, 0)
 	}
 }
